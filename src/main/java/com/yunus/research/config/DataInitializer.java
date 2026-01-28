@@ -66,11 +66,13 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         private void seedRealTeamMembers() {
-                // Create all 10 real team members with their actual information
+                // Create all team members with their actual information (including professor)
                 List<Member> realMembers = Arrays.asList(
+                                // 0. Prof. Dr. Yunus Ahmed - Principal Investigator
+                                createProfessorMember(),
                                 // 1. Dr. Md. Shahinuzzaman - Post Doctoral Researcher
                                 createRealMember(
-                                                "Shahinuzzaman",
+                                                "shahinuzzaman",
                                                 "Dr. Md. Shahinuzzaman",
                                                 "shahinchmiu@gmail.com",
                                                 "+8801709019051",
@@ -79,7 +81,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 2. Masum Howlader - Research Assistant (RA)
                                 createRealMember(
-                                                "Masum",
+                                                "masum",
                                                 "Masum Howlader",
                                                 "masum.est15@gmail.com",
                                                 "+8801723197784",
@@ -88,7 +90,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 3. Sanjida Afroz - PhD Student
                                 createRealMember(
-                                                "Sanjida",
+                                                "sanjida",
                                                 "Sanjida Afroz",
                                                 "Sanjidaafrozee@gmail.com",
                                                 "+8801778720458",
@@ -97,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 4. Md. Moazzam Hossain - Research Assistant
                                 createRealMember(
-                                                "Moazzam",
+                                                "moazzam",
                                                 "Md. Moazzam Hossain",
                                                 "mhossainacce@cu.ac.bd",
                                                 "+8801827587189",
@@ -106,7 +108,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 5. Meherunnesa Prima - M.Sc Student
                                 createRealMember(
-                                                "Meherunnesa",
+                                                "meherunnesa",
                                                 "Meherunnesa Prima",
                                                 "preemameher831@gmail.com",
                                                 "+8801997498856",
@@ -115,7 +117,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 6. Sanjida Mukut - M.Phil Student
                                 createRealMember(
-                                                "Mukut",
+                                                "mukut",
                                                 "Sanjida Mukut",
                                                 "sanjida_mukut@cuet.ac.bd",
                                                 "+8801703552494",
@@ -124,7 +126,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 7. Bristy Debi - M.Phil Student
                                 createRealMember(
-                                                "Bristy",
+                                                "bristy",
                                                 "Bristy Debi",
                                                 "bristydebi6891@gmail.com",
                                                 "+8801877610851",
@@ -133,7 +135,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 8. Raktim Mohajan - MSc Student Researcher
                                 createRealMember(
-                                                "Raktim",
+                                                "raktim",
                                                 "Raktim Mohajan",
                                                 "raktimmohajan@gmail.com",
                                                 "+8801521535517",
@@ -142,7 +144,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 9. Sharmin Nahar Chowdhury Nepu - Master's Fellowship
                                 createRealMember(
-                                                "Sharmin",
+                                                "sharmin",
                                                 "Sharmin Nahar Chowdhury Nepu",
                                                 "sharminnepu3015@gmail.com",
                                                 "+8801793153015",
@@ -151,7 +153,7 @@ public class DataInitializer implements CommandLineRunner {
                                                 LocalDate.of(2024, 1, 1)),
                                 // 10. Md. Khalid Hossain Shishir - Research Associate
                                 createRealMember(
-                                                "Khalid",
+                                                "khalid",
                                                 "Md. Khalid Hossain Shishir",
                                                 "khalidhossain151@gmail.com",
                                                 "+8801787891587",
@@ -189,6 +191,27 @@ public class DataInitializer implements CommandLineRunner {
                 member.setExpertise(Arrays.asList());
                 member.setJoinedDate(joinedDate);
                 return member;
+        }
+
+        private Member createProfessorMember() {
+                Member prof = new Member();
+                prof.setUsername("profyunus");
+                prof.setName("Prof. Dr. Md. Yunus Miah");
+                prof.setEmail("yunus@cuet.ac.bd");
+                prof.setPassword(passwordService.hashPassword("password123"));
+                prof.setPhone("+880-31-714946");
+                prof.setDesignation("Professor & Principal Investigator");
+                prof.setResearchArea(
+                                "Environmental Remediation, Resource Recovery, Nanomaterials, Wastewater Treatment, Electrochemistry");
+                prof.setBio("Prof. Dr. Md. Yunus Miah is a distinguished Professor at the Department of Chemistry, Chittagong University of Engineering & Technology (CUET). He obtained his B.Sc. (Hons.) in Chemistry from University of Chittagong in 1996, M.Sc. in Inorganic Chemistry in 1998, and Ph.D. from CUET in 2015. He completed Post-Doctoral research at Hokkaido University, Japan. He specializes in environmental remediation, resource recovery, nanomaterials, electrochemistry, and wastewater treatment technologies. With extensive research experience and numerous publications in high-impact journals, he leads the Environmental Chemistry Research Group at CUET.");
+                prof.setPhotoUrl(
+                                "https://scholar.googleusercontent.com/citations?view_op=view_photo&user=5oILmB0AAAAJ&citpid=3");
+                prof.setGoogleScholarLink("https://scholar.google.com/citations?user=5oILmB0AAAAJ&hl=en");
+                prof.setExpertise(Arrays.asList("Environmental Remediation", "Resource Recovery", "Nanomaterials",
+                                "Wastewater Treatment", "Electrochemistry", "Analytical Chemistry",
+                                "Inorganic Chemistry"));
+                prof.setJoinedDate(LocalDate.of(2002, 6, 1));
+                return prof;
         }
 
         private void seedMembers() {

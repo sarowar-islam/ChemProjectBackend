@@ -2,6 +2,7 @@ package com.yunus.research.service;
 
 import com.yunus.research.dto.MemberDto;
 import com.yunus.research.dto.CreateMemberRequest;
+import com.yunus.research.dto.UpdateMemberSettingsRequest;
 import com.yunus.research.entity.Member;
 import com.yunus.research.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -102,6 +103,40 @@ public class MemberService {
                 // Clear and add new items to handle ElementCollection properly
                 member.getExpertise().clear();
                 member.getExpertise().addAll(dto.getExpertise());
+            }
+
+            return toDto(memberRepository.save(member));
+        });
+    }
+
+    @Transactional
+    public Optional<MemberDto> updateMemberSettings(String username, UpdateMemberSettingsRequest request) {
+        return memberRepository.findByUsername(username).map(member -> {
+            // Update name if provided
+            if (request.getName() != null && !request.getName().isEmpty()) {
+                member.setName(request.getName());
+            }
+
+            // Update username if provided and different
+            if (request.getUsername() != null && !request.getUsername().isEmpty()
+                    && !request.getUsername().equals(username)) {
+                // Check if new username already exists
+                if (memberRepository.existsByUsername(request.getUsername())) {
+                    throw new IllegalArgumentException("Username already taken");
+                }
+                member.setUsername(request.getUsername());
+            }
+
+            // Update password if provided
+            if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
+                // Verify current password
+                if (request.getCurrentPassword() == null || request.getCurrentPassword().isEmpty()) {
+                    throw new IllegalArgumentException("Current password is required");
+                }
+                if (!passwordService.verifyPassword(request.getCurrentPassword(), member.getPassword())) {
+                    throw new IllegalArgumentException("Current password is incorrect");
+                }
+                member.setPassword(passwordService.hashPassword(request.getNewPassword()));
             }
 
             return toDto(memberRepository.save(member));

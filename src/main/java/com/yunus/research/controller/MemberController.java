@@ -2,12 +2,14 @@ package com.yunus.research.controller;
 
 import com.yunus.research.dto.CreateMemberRequest;
 import com.yunus.research.dto.MemberDto;
+import com.yunus.research.dto.UpdateMemberSettingsRequest;
 import com.yunus.research.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/members")
@@ -52,6 +54,18 @@ public class MemberController {
         return memberService.updateMemberProfile(username, dto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/username/{username}/settings")
+    public ResponseEntity<?> updateMemberSettings(@PathVariable String username,
+            @RequestBody UpdateMemberSettingsRequest request) {
+        try {
+            return memberService.updateMemberSettings(username, request)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")
