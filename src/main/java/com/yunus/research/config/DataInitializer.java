@@ -37,6 +37,10 @@ public class DataInitializer implements CommandLineRunner {
                         log.info("Admin already exists, skipping admin seed.");
                 }
 
+                // Always try to seed real team members (only adds those that don't exist)
+                log.info("Checking and seeding real team members...");
+                seedRealTeamMembers();
+
                 // Seed other data only if they don't exist
                 if (projectRepository.count() == 0) {
                         seedProjects();
@@ -59,6 +63,132 @@ public class DataInitializer implements CommandLineRunner {
                 admin.setPassword(passwordService.hashPassword("admin123"));
                 adminRepository.save(admin);
                 log.info("Admin user created: yunus@cuet.ac.bd");
+        }
+
+        private void seedRealTeamMembers() {
+                // Create all 10 real team members with their actual information
+                List<Member> realMembers = Arrays.asList(
+                                // 1. Dr. Md. Shahinuzzaman - Post Doctoral Researcher
+                                createRealMember(
+                                                "Shahinuzzaman",
+                                                "Dr. Md. Shahinuzzaman",
+                                                "shahinchmiu@gmail.com",
+                                                "+8801709019051",
+                                                "Post Doctoral Researcher",
+                                                "https://scholar.google.com/citations?user=jwck77kAAAAJ&hl=en",
+                                                LocalDate.of(2024, 1, 1)),
+                                // 2. Masum Howlader - Research Assistant (RA)
+                                createRealMember(
+                                                "Masum",
+                                                "Masum Howlader",
+                                                "masum.est15@gmail.com",
+                                                "+8801723197784",
+                                                "Research Assistant (RA)",
+                                                "https://scholar.google.com/citations?user=RLyuVcIAAAAJ&hl=en",
+                                                LocalDate.of(2024, 1, 1)),
+                                // 3. Sanjida Afroz - PhD Student
+                                createRealMember(
+                                                "Sanjida",
+                                                "Sanjida Afroz",
+                                                "Sanjidaafrozee@gmail.com",
+                                                "+8801778720458",
+                                                "PhD Student",
+                                                null,
+                                                LocalDate.of(2024, 1, 1)),
+                                // 4. Md. Moazzam Hossain - Research Assistant
+                                createRealMember(
+                                                "Moazzam",
+                                                "Md. Moazzam Hossain",
+                                                "mhossainacce@cu.ac.bd",
+                                                "+8801827587189",
+                                                "Research Assistant",
+                                                "https://scholar.google.com/citations?hl=en&user=xNNahV0AAAAJ",
+                                                LocalDate.of(2024, 1, 1)),
+                                // 5. Meherunnesa Prima - M.Sc Student
+                                createRealMember(
+                                                "Meherunnesa",
+                                                "Meherunnesa Prima",
+                                                "preemameher831@gmail.com",
+                                                "+8801997498856",
+                                                "M.Sc Student",
+                                                "https://scholar.google.com/citations?user=5AOdUZsAAAAJ&hl=en",
+                                                LocalDate.of(2024, 1, 1)),
+                                // 6. Sanjida Mukut - M.Phil Student
+                                createRealMember(
+                                                "Mukut",
+                                                "Sanjida Mukut",
+                                                "sanjida_mukut@cuet.ac.bd",
+                                                "+8801703552494",
+                                                "M.Phil Student",
+                                                "https://scholar.google.com/citations?user=FqsEfEkAAAAJ&hl=en",
+                                                LocalDate.of(2024, 1, 1)),
+                                // 7. Bristy Debi - M.Phil Student
+                                createRealMember(
+                                                "Bristy",
+                                                "Bristy Debi",
+                                                "bristydebi6891@gmail.com",
+                                                "+8801877610851",
+                                                "M.Phil Student",
+                                                null,
+                                                LocalDate.of(2024, 1, 1)),
+                                // 8. Raktim Mohajan - MSc Student Researcher
+                                createRealMember(
+                                                "Raktim",
+                                                "Raktim Mohajan",
+                                                "raktimmohajan@gmail.com",
+                                                "+8801521535517",
+                                                "MSc Student Researcher",
+                                                null,
+                                                LocalDate.of(2024, 1, 1)),
+                                // 9. Sharmin Nahar Chowdhury Nepu - Master's Fellowship
+                                createRealMember(
+                                                "Sharmin",
+                                                "Sharmin Nahar Chowdhury Nepu",
+                                                "sharminnepu3015@gmail.com",
+                                                "+8801793153015",
+                                                "Master's Fellowship",
+                                                null,
+                                                LocalDate.of(2024, 1, 1)),
+                                // 10. Md. Khalid Hossain Shishir - Research Associate
+                                createRealMember(
+                                                "Khalid",
+                                                "Md. Khalid Hossain Shishir",
+                                                "khalidhossain151@gmail.com",
+                                                "+8801787891587",
+                                                "Research Associate",
+                                                "https://scholar.google.com/citations?user=y9cyfjnopk39QeKTy",
+                                                LocalDate.of(2024, 1, 1)));
+
+                // Only save members that don't already exist (by email)
+                int addedCount = 0;
+                for (Member member : realMembers) {
+                        if (!memberRepository.existsByEmail(member.getEmail())) {
+                                memberRepository.save(member);
+                                addedCount++;
+                                log.info("Added member: {} ({})", member.getName(), member.getEmail());
+                        } else {
+                                log.info("Member already exists: {} ({})", member.getName(), member.getEmail());
+                        }
+                }
+                log.info("Added {} new real team members", addedCount);
+        }
+
+        private Member createRealMember(String username, String name, String email, String phone,
+                        String designation, String scholarLink, LocalDate joinedDate) {
+                Member member = new Member();
+                member.setUsername(username);
+                member.setName(name);
+                member.setEmail(email);
+                member.setPassword(passwordService.hashPassword("password123"));
+                member.setPhone(phone);
+                member.setDesignation(designation);
+                member.setResearchArea("");
+                member.setBio("");
+                member.setPhotoUrl("");
+                member.setGoogleScholarLink(scholarLink != null ? scholarLink : "");
+                member.setExpertise(Arrays.asList());
+                member.setJoinedDate(joinedDate);
+                return member;
         }
 
         private void seedMembers() {
