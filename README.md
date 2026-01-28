@@ -59,16 +59,17 @@ The API will be available at `http://localhost:8080`
 
 Set these environment variables in Railway:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection URL |
-| `DATABASE_USERNAME` | Database username |
-| `DATABASE_PASSWORD` | Database password |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
-| `CLOUDINARY_API_KEY` | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret |
+| Variable                | Description               |
+| ----------------------- | ------------------------- |
+| `DATABASE_URL`          | PostgreSQL connection URL |
+| `DATABASE_USERNAME`     | Database username         |
+| `DATABASE_PASSWORD`     | Database password         |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name     |
+| `CLOUDINARY_API_KEY`    | Cloudinary API key        |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret     |
 
 Railway will automatically:
+
 - Detect this as a Java/Maven project
 - Build using `mvn clean package`
 - Use the `Procfile` for starting the application

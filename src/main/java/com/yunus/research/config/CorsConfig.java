@@ -21,8 +21,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://localhost:3000",
                         "http://127.0.0.1:5173",
-                        "https://prof-dr-yunus-researchgroup.netlify.app"
-                )
+                        "https://prof-dr-yunus-researchgroup.netlify.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -36,8 +35,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 "http://localhost:5173",
                 "http://localhost:3000",
                 "http://127.0.0.1:5173",
-                "https://prof-dr-yunus-researchgroup.netlify.app"
-        ));
+                "https://prof-dr-yunus-researchgroup.netlify.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
