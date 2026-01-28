@@ -24,7 +24,7 @@ public class Publication {
     private String title;
 
     // Store authors as a list
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "publication_authors", joinColumns = @JoinColumn(name = "publication_id"))
     @Column(name = "author")
     private List<String> authors = new ArrayList<>();
