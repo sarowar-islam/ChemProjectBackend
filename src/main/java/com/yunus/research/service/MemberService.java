@@ -42,7 +42,8 @@ public class MemberService {
         member.setEmail(request.getEmail());
         member.setPassword(passwordService.hashPassword(request.getPassword()));
         member.setPhone(request.getPhone());
-        member.setDesignation(request.getDesignation());
+        member.setPosition(request.getPosition());
+        member.setTitle(request.getTitle());
         member.setResearchArea(request.getResearchArea());
         member.setBio(request.getBio());
         member.setPhotoUrl(request.getPhotoUrl());
@@ -66,8 +67,10 @@ public class MemberService {
                 member.setEmail(dto.getEmail());
             if (dto.getPhone() != null)
                 member.setPhone(dto.getPhone());
-            if (dto.getDesignation() != null)
-                member.setDesignation(dto.getDesignation());
+            if (dto.getPosition() != null)
+                member.setPosition(dto.getPosition());
+            if (dto.getTitle() != null)
+                member.setTitle(dto.getTitle());
             if (dto.getResearchArea() != null)
                 member.setResearchArea(dto.getResearchArea());
             if (dto.getBio() != null)
@@ -158,7 +161,8 @@ public class MemberService {
                 member.getName(),
                 member.getEmail(),
                 member.getPhone(),
-                member.getDesignation(),
+                member.getPosition(),
+                member.getTitle(),
                 member.getResearchArea(),
                 member.getBio(),
                 member.getPhotoUrl(),

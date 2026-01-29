@@ -176,14 +176,15 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         private Member createRealMember(String username, String name, String email, String phone,
-                        String designation, String scholarLink, LocalDate joinedDate) {
+                        String title, String scholarLink, LocalDate joinedDate) {
                 Member member = new Member();
                 member.setUsername(username);
                 member.setName(name);
                 member.setEmail(email);
                 member.setPassword(passwordService.hashPassword("password123"));
                 member.setPhone(phone);
-                member.setDesignation(designation);
+                member.setPosition("researcher"); // Default position
+                member.setTitle(title);
                 member.setResearchArea("");
                 member.setBio("");
                 member.setPhotoUrl("");
@@ -200,7 +201,8 @@ public class DataInitializer implements CommandLineRunner {
                 prof.setEmail("yunus@cuet.ac.bd");
                 prof.setPassword(passwordService.hashPassword("password123"));
                 prof.setPhone("+880-31-714946");
-                prof.setDesignation("Professor & Principal Investigator");
+                prof.setPosition("team_leader"); // Team leader position
+                prof.setTitle("Professor & Principal Investigator");
                 prof.setResearchArea(
                                 "Environmental Remediation, Resource Recovery, Nanomaterials, Wastewater Treatment, Electrochemistry");
                 prof.setBio("Prof. Dr. Md. Yunus Miah is a distinguished Professor at the Department of Chemistry, Chittagong University of Engineering & Technology (CUET). He obtained his B.Sc. (Hons.) in Chemistry from University of Chittagong in 1996, M.Sc. in Inorganic Chemistry in 1998, and Ph.D. from CUET in 2015. He completed Post-Doctoral research at Hokkaido University, Japan. He specializes in environmental remediation, resource recovery, nanomaterials, electrochemistry, and wastewater treatment technologies. With extensive research experience and numerous publications in high-impact journals, he leads the Environmental Chemistry Research Group at CUET.");
@@ -222,7 +224,8 @@ public class DataInitializer implements CommandLineRunner {
                 yunus.setEmail("yunus@cuet.ac.bd");
                 yunus.setPassword(passwordService.hashPassword("member123"));
                 yunus.setPhone("+880-31-714946");
-                yunus.setDesignation("Professor & Principal Investigator");
+                yunus.setPosition("team_leader");
+                yunus.setTitle("Professor & Principal Investigator");
                 yunus.setResearchArea(
                                 "Environmental Remediation, Resource Recovery, Nanomaterials, Wastewater Treatment");
                 yunus.setBio(
@@ -351,7 +354,7 @@ public class DataInitializer implements CommandLineRunner {
                 log.info("Created {} team members", members.size() + 1);
         }
 
-        private Member createMember(String username, String name, String email, String designation,
+        private Member createMember(String username, String name, String email, String title,
                         String researchArea, String bio, String scholarLink,
                         List<String> expertise, LocalDate joinedDate) {
                 Member member = new Member();
@@ -359,7 +362,8 @@ public class DataInitializer implements CommandLineRunner {
                 member.setName(name);
                 member.setEmail(email);
                 member.setPassword(passwordService.hashPassword("member123"));
-                member.setDesignation(designation);
+                member.setPosition("researcher"); // Default position
+                member.setTitle(title);
                 member.setResearchArea(researchArea);
                 member.setBio(bio);
                 member.setPhotoUrl("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400");

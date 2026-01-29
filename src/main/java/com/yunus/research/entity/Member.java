@@ -35,7 +35,9 @@ public class Member {
 
     private String phone;
 
-    private String designation;
+    private String position;
+
+    private String title;
 
     @Column(name = "research_area")
     private String researchArea;

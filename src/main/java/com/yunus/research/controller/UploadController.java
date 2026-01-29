@@ -85,7 +85,7 @@ public class UploadController {
 
             // Update member's photoUrl in database
             MemberDto updateDto = new MemberDto(
-                    null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null,
                     photoUrl, null, null, null);
 
             var updatedMember = memberService.updateMemberProfile(username, updateDto);
