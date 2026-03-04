@@ -366,7 +366,7 @@ public class DataInitializer implements CommandLineRunner {
                 member.setTitle(title);
                 member.setResearchArea(researchArea);
                 member.setBio(bio);
-                member.setPhotoUrl("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400");
+                member.setPhotoUrl("");
                 member.setGoogleScholarLink(scholarLink);
                 member.setExpertise(expertise);
                 member.setJoinedDate(joinedDate);
