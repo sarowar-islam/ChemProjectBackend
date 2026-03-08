@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: research-api
+    runtime: java
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -Dserver.port=$PORT -jar target/research-0.0.1-SNAPSHOT.jar"
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
