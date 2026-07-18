@@ -1,8 +1,11 @@
 package com.yunus.research.controller;
 
 import com.yunus.research.dto.AuthResponse;
+import com.yunus.research.dto.PasswordResetConfirmRequest;
+import com.yunus.research.dto.PasswordResetRequest;
 import com.yunus.research.dto.LoginRequest;
 import com.yunus.research.service.AuthService;
+import com.yunus.research.service.MemberPasswordResetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final MemberPasswordResetService memberPasswordResetService;
 
     @PostMapping("/admin/login")
     public ResponseEntity<?> loginAdmin(@RequestBody LoginRequest request) {
@@ -34,6 +38,38 @@ public class AuthController {
     public ResponseEntity<?> logout() {
         // JWT is stateless, just return success
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
+    @PostMapping("/member/forgot-password/request")
+    public ResponseEntity<?> requestMemberPasswordReset(@RequestBody PasswordResetRequest request) {
+        try {
+            memberPasswordResetService.requestReset(request.getEmail());
+            return ResponseEntity.ok(Map.of(
+                    "message",
+                    "An email has been sent to the given mail address. Please check the spam box if mail is not found in inbox."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/member/forgot-password/verify")
+    public ResponseEntity<?> verifyMemberPasswordResetCode(@RequestBody PasswordResetConfirmRequest request) {
+        try {
+            memberPasswordResetService.verifyResetCode(request.getEmail(), request.getCode());
+            return ResponseEntity.ok(Map.of("message", "Code verified"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/member/forgot-password/confirm")
+    public ResponseEntity<?> confirmMemberPasswordReset(@RequestBody PasswordResetConfirmRequest request) {
+        try {
+            memberPasswordResetService.confirmReset(request);
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/validate")
