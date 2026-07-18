@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private static final int SECURITY_CODE_LENGTH = 6;
+    private final SecureRandom secureRandom = new SecureRandom();
     private final MemberRepository memberRepository;
     private final PasswordService passwordService;
 
@@ -35,6 +39,19 @@ public class MemberService {
         return memberRepository.findByUsername(username).map(this::toDto);
     }
 
+    public Optional<MemberDto> findByUsernameOrEmail(String identifier) {
+        if (identifier == null || identifier.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        String trimmed = identifier.trim();
+        if (trimmed.contains("@")) {
+            return memberRepository.findByEmailIgnoreCase(trimmed).map(this::toDto);
+        }
+        return memberRepository.findByUsernameIgnoreCase(trimmed)
+                .map(this::toDto)
+                .or(() -> memberRepository.findByUsername(trimmed).map(this::toDto));
+    }
+
     public MemberDto createMember(CreateMemberRequest request) {
         Member member = new Member();
         member.setUsername(request.getUsername());
@@ -47,6 +64,7 @@ public class MemberService {
         member.setResearchArea(request.getResearchArea());
         member.setBio(request.getBio());
         member.setPhotoUrl(request.getPhotoUrl());
+        member.setSecurityCode(generateSecurityCode(request.getSecurityCode()));
         member.setGoogleScholarLink(request.getGoogleScholarLink());
         member.setExpertise(request.getExpertise());
 
@@ -56,6 +74,13 @@ public class MemberService {
 
         Member saved = memberRepository.save(member);
         return toDto(saved);
+    }
+
+    private String generateSecurityCode(String requestedCode) {
+        if (requestedCode != null && !requestedCode.isBlank()) {
+            return requestedCode.trim();
+        }
+        return String.format(Locale.ROOT, "%0" + SECURITY_CODE_LENGTH + "d", secureRandom.nextInt(1_000_000));
     }
 
     @Transactional
@@ -160,6 +185,7 @@ public class MemberService {
                 member.getUsername(),
                 member.getName(),
                 member.getEmail(),
+                member.getSecurityCode(),
                 member.getPhone(),
                 member.getPosition(),
                 member.getTitle(),

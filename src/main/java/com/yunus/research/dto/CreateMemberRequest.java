@@ -14,6 +14,7 @@ public class CreateMemberRequest {
     private String name;
     private String email;
     private String password;
+    private String securityCode;
     private String phone;
     private String position;
     private String title;

@@ -37,6 +37,13 @@ public class MemberController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/lookup")
+    public ResponseEntity<MemberDto> lookupMember(@RequestParam String identifier) {
+        return memberService.findByUsernameOrEmail(identifier)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<MemberDto> createMember(@RequestBody CreateMemberRequest request) {
         return ResponseEntity.ok(memberService.createMember(request));

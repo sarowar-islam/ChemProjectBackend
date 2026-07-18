@@ -19,7 +19,8 @@ import java.util.Optional;
 public class MemberPasswordResetService {
 
     private static final int MAX_ATTEMPTS = 5;
-    private static final int EXPIRY_MINUTES = 15;
+    private static final int RESET_EXPIRY_MINUTES = 15;
+    private static final int SECURITY_CODE_EXPIRY_MINUTES = 30;
 
     private final MemberRepository memberRepository;
     private final MemberPasswordResetCodeRepository resetCodeRepository;
@@ -44,11 +45,38 @@ public class MemberPasswordResetService {
         resetCode.setMemberId(member.getId());
         resetCode.setEmail(member.getEmail());
         resetCode.setCodeHash(passwordService.hashPassword(code));
-        resetCode.setExpiresAt(LocalDateTime.now().plusMinutes(EXPIRY_MINUTES));
+        resetCode.setExpiresAt(LocalDateTime.now().plusMinutes(RESET_EXPIRY_MINUTES));
         resetCode.setAttempts(0);
         resetCodeRepository.save(resetCode);
 
         gmailEmailService.sendPasswordResetCode(member.getEmail(), member.getName(), code);
+    }
+
+    @Transactional
+    public String generateSecurityCodeForMember(String memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        return generateSecurityCodeForEmail(member.getEmail());
+    }
+
+    @Transactional
+    public String generateSecurityCodeForEmail(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        Member member = memberRepository.findByEmailIgnoreCase(normalizedEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        resetCodeRepository.deleteByEmailIgnoreCase(normalizedEmail);
+
+        String code = generateCode();
+        MemberPasswordResetCode resetCode = new MemberPasswordResetCode();
+        resetCode.setMemberId(member.getId());
+        resetCode.setEmail(member.getEmail());
+        resetCode.setCodeHash(passwordService.hashPassword(code));
+        resetCode.setExpiresAt(LocalDateTime.now().plusMinutes(SECURITY_CODE_EXPIRY_MINUTES));
+        resetCode.setAttempts(0);
+        resetCodeRepository.save(resetCode);
+
+        return code;
     }
 
     @Transactional
@@ -64,7 +92,7 @@ public class MemberPasswordResetService {
             throw new IllegalArgumentException("Password must be at least 6 characters");
         }
 
-        memberRepository.findByEmailIgnoreCase(normalizedEmail)
+        Member member = memberRepository.findByEmailIgnoreCase(normalizedEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset code"));
 
         MemberPasswordResetCode resetCode = resetCodeRepository
@@ -87,14 +115,12 @@ public class MemberPasswordResetService {
             throw new IllegalArgumentException("Invalid or expired reset code");
         }
 
-        Member member = memberRepository.findByEmailIgnoreCase(normalizedEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset code"));
-        member.setPassword(passwordService.hashPassword(newPassword));
-        memberRepository.save(member);
-
         resetCode.setUsedAt(LocalDateTime.now());
         resetCodeRepository.save(resetCode);
         resetCodeRepository.deleteByEmailIgnoreCase(normalizedEmail);
+
+        member.setPassword(passwordService.hashPassword(newPassword));
+        memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)

@@ -48,6 +48,9 @@ public class Member {
     @Column(name = "photo_url")
     private String photoUrl;
 
+    @Column(name = "security_code", length = 6)
+    private String securityCode;
+
     @Column(name = "google_scholar_link")
     private String googleScholarLink;
 

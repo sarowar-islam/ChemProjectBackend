@@ -14,6 +14,7 @@ public class MemberDto {
     private String username;
     private String name;
     private String email;
+    private String securityCode;
     private String phone;
     private String position;
     private String title;
