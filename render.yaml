@@ -21,6 +21,12 @@ services:
         sync: false
       - key: GMAIL_APP_PASSWORD
         sync: false
+      - key: MAIL_SMTP_PORT
+        value: "465"
+      - key: MAIL_SMTP_SSL
+        value: "true"
+      - key: MAIL_SMTP_STARTTLS
+        value: "false"
       - key: MAIL_SENDER_NAME
         value: Biochemical and Environmental Research Lab
       - key: MAIL_SENDER_EMAIL
