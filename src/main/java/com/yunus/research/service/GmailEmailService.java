@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -56,6 +57,15 @@ public class GmailEmailService {
             helper.setReplyTo(senderEmail);
             helper.setSubject(subject);
             helper.setText(textContent, htmlContent);
+
+            String domain = senderEmail.contains("@") ? senderEmail.substring(senderEmail.lastIndexOf('@') + 1)
+                    : "localhost";
+            mimeMessage.setHeader("X-Mailer", "Spring Boot Mail");
+            mimeMessage.setHeader("X-Priority", "3");
+            mimeMessage.setHeader("Importance", "normal");
+            mimeMessage.setHeader("Auto-Submitted", "no");
+            mimeMessage.setHeader("Message-ID", "<" + UUID.randomUUID() + "@" + domain + ">");
+            mimeMessage.saveChanges();
 
             log.info("Sending {} email to {} using Gmail sender {} <{}>", emailType, recipientEmail, senderName,
                     senderEmail);
