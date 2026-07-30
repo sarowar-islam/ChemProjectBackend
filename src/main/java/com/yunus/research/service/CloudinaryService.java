@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,17 @@ public class CloudinaryService {
      */
     public String uploadMemberPhoto(MultipartFile file, String username) throws IOException {
         return uploadImage(file, "research-group/members", username);
+    }
+
+    /**
+     * Upload a news image to Cloudinary
+     *
+     * @param file The image file
+     * @return The secure URL of the uploaded image
+     */
+    public String uploadNewsImage(MultipartFile file) throws IOException {
+        String publicId = "news-" + UUID.randomUUID();
+        return uploadImage(file, "research-group/news", publicId);
     }
 
     /**
