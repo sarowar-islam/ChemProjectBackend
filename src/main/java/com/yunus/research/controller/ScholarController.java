@@ -44,6 +44,36 @@ public class ScholarController {
         ScholarProfileDto profile = googleScholarService.scrapeProfile(scholarUrl);
 
         if (profile == null) {
+            List<Publication> dbPubs = publicationRepository.findAll();
+            if (!dbPubs.isEmpty()) {
+                log.info("Google Scholar scrape returned null, falling back to {} cached publications from database", dbPubs.size());
+                List<ScholarPublicationDto> fallbackPubs = new ArrayList<>();
+                int totalCites = 0;
+                for (Publication p : dbPubs) {
+                    ScholarPublicationDto dto = new ScholarPublicationDto();
+                    dto.setTitle(p.getTitle());
+                    dto.setAuthors(p.getAuthors());
+                    dto.setYear(p.getYear() != null ? String.valueOf(p.getYear()) : "");
+                    dto.setJournal(p.getJournal());
+                    dto.setArticleUrl(p.getPdfLink());
+                    dto.setCitedBy(p.getCitedBy() != null ? String.valueOf(p.getCitedBy()) : "0");
+                    totalCites += (p.getCitedBy() != null ? p.getCitedBy() : 0);
+                    fallbackPubs.add(dto);
+                }
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("profile", Map.of(
+                        "name", "Professor Dr. Yunus Ahmed",
+                        "affiliation", "Professor & Head, Dept. of Chemistry, CUET",
+                        "imageUrl", "",
+                        "interests", "ARB and its ARG, AOPs, Environmental Remediation, Machine Learning, Electrochemical Sensor",
+                        "totalCitations", totalCites > 0 ? totalCites : 2359,
+                        "hIndex", 21,
+                        "i10Index", 29));
+                response.put("publications", fallbackPubs);
+                return ResponseEntity.ok(response);
+            }
+
             return ResponseEntity.ok(Map.of(
                     "success", false,
                     "error", "Failed to fetch publications from Google Scholar"));
