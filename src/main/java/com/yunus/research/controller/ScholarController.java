@@ -3,8 +3,10 @@ package com.yunus.research.controller;
 import com.yunus.research.dto.ScholarProfileDto;
 import com.yunus.research.dto.ScholarPublicationDto;
 import com.yunus.research.entity.Member;
+import com.yunus.research.entity.Publication;
 import com.yunus.research.entity.SiteSettings;
 import com.yunus.research.repository.MemberRepository;
+import com.yunus.research.repository.PublicationRepository;
 import com.yunus.research.repository.SiteSettingsRepository;
 import com.yunus.research.service.GoogleScholarService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class ScholarController {
     private final GoogleScholarService googleScholarService;
     private final SiteSettingsRepository siteSettingsRepository;
     private final MemberRepository memberRepository;
+    private final PublicationRepository publicationRepository;
 
     /**
      * Get publications from the main site's Google Scholar profile
@@ -46,6 +49,11 @@ public class ScholarController {
                     "error", "Failed to fetch publications from Google Scholar"));
         }
 
+        List<ScholarPublicationDto> pubs = profile.getPublications() != null ? profile.getPublications() : new ArrayList<>();
+        if (!pubs.isEmpty()) {
+            syncPublications(pubs);
+        }
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("profile", Map.of(
@@ -56,9 +64,51 @@ public class ScholarController {
                 "totalCitations", profile.getTotalCitations(),
                 "hIndex", profile.getHIndex(),
                 "i10Index", profile.getI10Index()));
-        response.put("publications", profile.getPublications() != null ? profile.getPublications() : new ArrayList<>());
+        response.put("publications", pubs);
 
         return ResponseEntity.ok(response);
+    }
+
+    private void syncPublications(List<ScholarPublicationDto> scholarPubs) {
+        try {
+            long currentCount = publicationRepository.count();
+            if (currentCount < scholarPubs.size()) {
+                publicationRepository.deleteAll();
+
+                List<Publication> entities = new ArrayList<>();
+                for (ScholarPublicationDto dto : scholarPubs) {
+                    if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) continue;
+                    Publication pub = new Publication();
+                    pub.setTitle(dto.getTitle().trim());
+                    pub.setAuthors(dto.getAuthors() != null ? dto.getAuthors() : new ArrayList<>());
+
+                    int year = 2024;
+                    try {
+                        if (dto.getYear() != null && !dto.getYear().trim().isEmpty()) {
+                            year = Integer.parseInt(dto.getYear().trim());
+                        }
+                    } catch (Exception ignored) {}
+                    pub.setYear(year);
+
+                    pub.setJournal(dto.getJournal() != null && !dto.getJournal().trim().isEmpty() ? dto.getJournal().trim() : "Journal Publication");
+                    pub.setPdfLink(dto.getArticleUrl());
+
+                    int citedBy = 0;
+                    try {
+                        if (dto.getCitedBy() != null && !dto.getCitedBy().trim().isEmpty()) {
+                            citedBy = Integer.parseInt(dto.getCitedBy().trim());
+                        }
+                    } catch (Exception ignored) {}
+                    pub.setCitedBy(citedBy);
+
+                    entities.add(pub);
+                }
+                publicationRepository.saveAll(entities);
+                log.info("Successfully synced {} publications into the database.", entities.size());
+            }
+        } catch (Exception e) {
+            log.warn("Could not sync publications to database: {}", e.getMessage());
+        }
     }
 
     /**
