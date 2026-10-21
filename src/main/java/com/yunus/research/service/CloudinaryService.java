@@ -50,7 +50,11 @@ public class CloudinaryService {
             return secureUrl;
         } catch (Exception e) {
             log.error("Failed to upload image to Cloudinary: {}", e.getMessage(), e);
-            throw new IOException("Failed to upload image: " + e.getMessage(), e);
+            String message = e.getMessage();
+            if (message != null && message.contains("cloud_name is disabled")) {
+                message = "Cloudinary account/cloud_name is disabled or suspended. Please verify your CLOUDINARY_CLOUD_NAME and credentials in .env";
+            }
+            throw new IOException("Failed to upload image: " + message, e);
         }
     }
 

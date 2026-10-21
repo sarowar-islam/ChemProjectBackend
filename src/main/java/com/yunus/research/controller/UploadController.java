@@ -79,7 +79,8 @@ public class UploadController {
             log.error("Failed to upload news image: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(
                     "success", false,
-                    "error", "Failed to upload image: " + e.getMessage()));
+                    "error", e.getMessage(),
+                    "message", e.getMessage()));
         }
     }
 
@@ -146,7 +147,8 @@ public class UploadController {
             log.error("Failed to upload photo for member: {} - Error: {}", username, e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(
                     "success", false,
-                    "error", "Failed to upload photo: " + e.getMessage()));
+                    "error", e.getMessage(),
+                    "message", e.getMessage()));
         }
     }
 }
