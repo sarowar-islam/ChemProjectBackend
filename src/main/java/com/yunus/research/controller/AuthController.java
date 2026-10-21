@@ -22,16 +22,26 @@ public class AuthController {
 
     @PostMapping("/admin/login")
     public ResponseEntity<?> loginAdmin(@RequestBody LoginRequest request) {
-        return authService.loginAdmin(request.getEmail(), request.getPassword())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().body(new AuthResponse(null, null)));
+        try {
+            AuthResponse response = authService.loginAdmin(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Login failed: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/member/login")
     public ResponseEntity<?> loginMember(@RequestBody LoginRequest request) {
-        return authService.loginMember(request.getUsername(), request.getPassword())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().body(new AuthResponse(null, null)));
+        try {
+            AuthResponse response = authService.loginMember(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Login failed: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/logout")

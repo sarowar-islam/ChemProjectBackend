@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,24 @@ public class GoogleScholarService {
 
     private static final String SCHOLAR_BASE_URL = "https://scholar.google.com";
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+    // In-memory cache to prevent Google Scholar rate-limiting / IP blocking
+    private final Map<String, CachedProfile> profileCache = new ConcurrentHashMap<>();
+
+    private static class CachedProfile {
+        final ScholarProfileDto profile;
+        final long timestamp;
+
+        CachedProfile(ScholarProfileDto profile) {
+            this.profile = profile;
+            this.timestamp = System.currentTimeMillis();
+        }
+
+        boolean isExpired() {
+            // Keep fresh for 30 minutes
+            return (System.currentTimeMillis() - timestamp) > 30L * 60L * 1000L;
+        }
+    }
 
     /**
      * Extract user ID from Google Scholar URL
@@ -49,6 +68,13 @@ public class GoogleScholarService {
             return null;
         }
 
+        // Return from cache if fresh
+        CachedProfile cached = profileCache.get(userId);
+        if (cached != null && !cached.isExpired()) {
+            log.info("Returning cached Google Scholar profile for user {}", userId);
+            return cached.profile;
+        }
+
         try {
             // Fetch the profile page
             String profileUrl = SCHOLAR_BASE_URL + "/citations?user=" + userId + "&hl=en&cstart=0&pagesize=100";
@@ -56,6 +82,9 @@ public class GoogleScholarService {
 
             Document doc = Jsoup.connect(profileUrl)
                     .userAgent(USER_AGENT)
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+                    .header("Accept-Language", "en-US,en;q=0.9")
+                    .referrer("https://www.google.com/")
                     .timeout(30000)
                     .get();
 
@@ -160,10 +189,18 @@ public class GoogleScholarService {
             profile.setPublications(publications);
             log.info("Successfully scraped {} publications for {}", publications.size(), profile.getName());
 
+            if (!publications.isEmpty()) {
+                profileCache.put(userId, new CachedProfile(profile));
+            }
+
             return profile;
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error scraping Google Scholar profile: {}", e.getMessage());
+            if (cached != null) {
+                log.info("Returning previous cached profile for user {} after scrape error", userId);
+                return cached.profile;
+            }
             return null;
         }
     }
