@@ -85,8 +85,50 @@ public class UploadController {
     }
 
     /**
+     * Upload a hero image to Cloudinary
+     *
+     * @param file The image file to upload
+     * @return The URL of the uploaded image
+     */
+    @PostMapping("/hero-image")
+    public ResponseEntity<Map<String, Object>> uploadHeroImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "No file provided"));
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File must be an image"));
+        }
+
+        if (file.getSize() > 2 * 1024 * 1024) { // max 2MB
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File size must be less than 2MB"));
+        }
+
+        try {
+            String imageUrl = cloudinaryService.uploadHeroImage(file);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "imageUrl", imageUrl,
+                    "message", "Hero image uploaded successfully"));
+        } catch (Exception e) {
+            log.error("Failed to upload hero image: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage(),
+                    "message", e.getMessage()));
+        }
+    }
+
+    /**
      * Upload a member's profile photo to Cloudinary
-     * 
+     *
      * @param file     The image file to upload
      * @param username The member's username
      * @return The URL of the uploaded image

@@ -23,6 +23,9 @@ public class SiteSettings {
     @Column(name = "about_us", columnDefinition = "TEXT")
     private String aboutUs;
 
+    @Column(name = "hero_images", columnDefinition = "TEXT")
+    private String heroImages;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

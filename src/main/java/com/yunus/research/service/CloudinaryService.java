@@ -20,7 +20,7 @@ public class CloudinaryService {
 
     /**
      * Upload an image to Cloudinary
-     * 
+     *
      * @param file     The file to upload
      * @param folder   The folder in Cloudinary to store the image
      * @param publicId Optional custom public ID for the image
@@ -60,7 +60,7 @@ public class CloudinaryService {
 
     /**
      * Upload a member profile photo
-     * 
+     *
      * @param file     The photo file
      * @param username The member's username (used as public ID)
      * @return The secure URL of the uploaded photo
@@ -81,8 +81,19 @@ public class CloudinaryService {
     }
 
     /**
+     * Upload a hero image to Cloudinary
+     *
+     * @param file The image file
+     * @return The secure URL of the uploaded image
+     */
+    public String uploadHeroImage(MultipartFile file) throws IOException {
+        String publicId = "hero-" + UUID.randomUUID();
+        return uploadImage(file, "research-group/hero", publicId);
+    }
+
+    /**
      * Delete an image from Cloudinary
-     * 
+     *
      * @param publicId The public ID of the image to delete
      */
     public void deleteImage(String publicId) {
