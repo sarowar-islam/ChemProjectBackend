@@ -19,12 +19,12 @@ public class CloudinaryService {
     private final Cloudinary cloudinary;
 
     /**
-     * Upload an image to Cloudinary
+     * Upload an image or file to Cloudinary with auto resource type
      *
      * @param file     The file to upload
-     * @param folder   The folder in Cloudinary to store the image
-     * @param publicId Optional custom public ID for the image
-     * @return The secure URL of the uploaded image
+     * @param folder   The folder in Cloudinary to store the file
+     * @param publicId Optional custom public ID for the file
+     * @return The secure URL of the uploaded file
      */
     public String uploadImage(MultipartFile file, String folder, String publicId) throws IOException {
         try {
@@ -33,6 +33,7 @@ public class CloudinaryService {
 
             Map<String, Object> options = ObjectUtils.asMap(
                     "folder", folder,
+                    "resource_type", "auto",
                     "overwrite", true);
 
             if (publicId != null && !publicId.isEmpty()) {
@@ -45,16 +46,16 @@ public class CloudinaryService {
             log.info("Cloudinary upload result: {}", uploadResult);
 
             String secureUrl = (String) uploadResult.get("secure_url");
-            log.info("Image uploaded successfully to Cloudinary: {}", secureUrl);
+            log.info("File uploaded successfully to Cloudinary: {}", secureUrl);
 
             return secureUrl;
         } catch (Exception e) {
-            log.error("Failed to upload image to Cloudinary: {}", e.getMessage(), e);
+            log.error("Failed to upload file to Cloudinary: {}", e.getMessage(), e);
             String message = e.getMessage();
             if (message != null && message.contains("cloud_name is disabled")) {
                 message = "Cloudinary account/cloud_name is disabled or suspended. Please verify your CLOUDINARY_CLOUD_NAME and credentials in .env";
             }
-            throw new IOException("Failed to upload image: " + message, e);
+            throw new IOException("Failed to upload file: " + message, e);
         }
     }
 
@@ -89,6 +90,17 @@ public class CloudinaryService {
     public String uploadHeroImage(MultipartFile file) throws IOException {
         String publicId = "hero-" + UUID.randomUUID();
         return uploadImage(file, "research-group/hero", publicId);
+    }
+
+    /**
+     * Upload a notice file (image, PDF, document) to Cloudinary
+     *
+     * @param file The file
+     * @return The secure URL of the uploaded file
+     */
+    public String uploadNoticeFile(MultipartFile file) throws IOException {
+        String publicId = "notice-" + UUID.randomUUID();
+        return uploadImage(file, "research-group/notices", publicId);
     }
 
     /**

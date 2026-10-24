@@ -36,7 +36,9 @@ public class NoticeService {
     public NoticeDto createNotice(NoticeDto dto) {
         Notice notice = new Notice();
         notice.setTitle(dto.getTitle());
-        notice.setContent(dto.getContent());
+        notice.setPublishedBy(dto.getPublishedBy());
+        notice.setFileUrl(dto.getFileUrl());
+        notice.setContent(dto.getContent() != null ? dto.getContent() : "");
         notice.setPriority(parsePriority(dto.getPriority()));
 
         Notice saved = noticeRepository.save(notice);
@@ -47,6 +49,10 @@ public class NoticeService {
         return noticeRepository.findById(id).map(notice -> {
             if (dto.getTitle() != null)
                 notice.setTitle(dto.getTitle());
+            if (dto.getPublishedBy() != null)
+                notice.setPublishedBy(dto.getPublishedBy());
+            if (dto.getFileUrl() != null)
+                notice.setFileUrl(dto.getFileUrl());
             if (dto.getContent() != null)
                 notice.setContent(dto.getContent());
             if (dto.getPriority() != null)
@@ -77,8 +83,10 @@ public class NoticeService {
         return new NoticeDto(
                 notice.getId(),
                 notice.getTitle(),
+                notice.getPublishedBy(),
+                notice.getFileUrl(),
                 notice.getContent(),
                 notice.getCreatedAt() != null ? notice.getCreatedAt().toString() : null,
-                notice.getPriority().name().toLowerCase());
+                notice.getPriority() != null ? notice.getPriority().name().toLowerCase() : "normal");
     }
 }

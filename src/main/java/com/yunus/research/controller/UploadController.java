@@ -127,6 +127,41 @@ public class UploadController {
     }
 
     /**
+     * Upload a notice file (image, PDF, document) to Cloudinary
+     *
+     * @param file The file to upload
+     * @return The URL of the uploaded file
+     */
+    @PostMapping("/notice-file")
+    public ResponseEntity<Map<String, Object>> uploadNoticeFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "No file provided"));
+        }
+
+        if (file.getSize() > 10 * 1024 * 1024) { // max 10MB
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File size must be less than 10MB"));
+        }
+
+        try {
+            String fileUrl = cloudinaryService.uploadNoticeFile(file);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "fileUrl", fileUrl,
+                    "message", "Notice file uploaded successfully"));
+        } catch (Exception e) {
+            log.error("Failed to upload notice file: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage(),
+                    "message", e.getMessage()));
+        }
+    }
+
+    /**
      * Upload a member's profile photo to Cloudinary
      *
      * @param file     The image file to upload
@@ -184,7 +219,7 @@ public class UploadController {
                 return ResponseEntity.badRequest().body(Map.of(
                         "success", false,
                         "error", "Member not found"));
-            }
+                }
         } catch (Exception e) {
             log.error("Failed to upload photo for member: {} - Error: {}", username, e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of(

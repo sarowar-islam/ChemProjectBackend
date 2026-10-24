@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class NoticeDto {
     private String id;
     private String title;
+    private String publishedBy;
+    private String fileUrl;
     private String content;
     private String date;
     private String priority; // "normal" or "important"

@@ -21,7 +21,13 @@ public class Notice {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "published_by")
+    private String publishedBy;
+
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
