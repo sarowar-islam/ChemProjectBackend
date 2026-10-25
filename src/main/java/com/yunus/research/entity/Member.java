@@ -54,6 +54,10 @@ public class Member {
     @Column(name = "google_scholar_link")
     private String googleScholarLink;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_social_links", joinColumns = @JoinColumn(name = "member_id"))
+    private List<SocialLink> socialLinks = new ArrayList<>();
+
     // Store expertise as JSON array in PostgreSQL
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "member_expertise", joinColumns = @JoinColumn(name = "member_id"))

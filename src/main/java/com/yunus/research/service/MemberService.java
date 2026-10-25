@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -66,7 +67,8 @@ public class MemberService {
         member.setPhotoUrl(request.getPhotoUrl());
         member.setSecurityCode(generateSecurityCode(request.getSecurityCode()));
         member.setGoogleScholarLink(request.getGoogleScholarLink());
-        member.setExpertise(request.getExpertise());
+        member.setSocialLinks(request.getSocialLinks() != null ? request.getSocialLinks() : new ArrayList<>());
+        member.setExpertise(request.getExpertise() != null ? request.getExpertise() : new ArrayList<>());
 
         if (request.getJoinedDate() != null && !request.getJoinedDate().isEmpty()) {
             member.setJoinedDate(LocalDate.parse(request.getJoinedDate().substring(0, 10)));
@@ -104,6 +106,10 @@ public class MemberService {
                 member.setPhotoUrl(dto.getPhotoUrl());
             if (dto.getGoogleScholarLink() != null)
                 member.setGoogleScholarLink(dto.getGoogleScholarLink());
+            if (dto.getSocialLinks() != null) {
+                member.getSocialLinks().clear();
+                member.getSocialLinks().addAll(dto.getSocialLinks());
+            }
             if (dto.getExpertise() != null) {
                 // Clear and add new items to handle ElementCollection properly
                 member.getExpertise().clear();
@@ -127,6 +133,10 @@ public class MemberService {
                 member.setPhotoUrl(dto.getPhotoUrl());
             if (dto.getGoogleScholarLink() != null)
                 member.setGoogleScholarLink(dto.getGoogleScholarLink());
+            if (dto.getSocialLinks() != null) {
+                member.getSocialLinks().clear();
+                member.getSocialLinks().addAll(dto.getSocialLinks());
+            }
             if (dto.getExpertise() != null) {
                 // Clear and add new items to handle ElementCollection properly
                 member.getExpertise().clear();
@@ -193,6 +203,7 @@ public class MemberService {
                 member.getBio(),
                 member.getPhotoUrl(),
                 member.getGoogleScholarLink(),
+                member.getSocialLinks(),
                 member.getExpertise(),
                 member.getJoinedDate() != null ? member.getJoinedDate().toString() : null);
     }

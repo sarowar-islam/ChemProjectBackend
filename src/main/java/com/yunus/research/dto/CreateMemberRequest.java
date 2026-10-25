@@ -1,5 +1,6 @@
 package com.yunus.research.dto;
 
+import com.yunus.research.entity.SocialLink;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class CreateMemberRequest {
     private String bio;
     private String photoUrl;
     private String googleScholarLink;
+    private List<SocialLink> socialLinks;
     private List<String> expertise;
     private String joinedDate;
 }
