@@ -138,19 +138,35 @@ public class MemberService {
                 member.setIsContactPublic(dto.getIsContactPublic());
 
             if (dto.getSocialLinks() != null) {
-                member.getSocialLinks().clear();
+                if (member.getSocialLinks() == null) {
+                    member.setSocialLinks(new ArrayList<>());
+                } else {
+                    member.getSocialLinks().clear();
+                }
                 member.getSocialLinks().addAll(dto.getSocialLinks());
             }
             if (dto.getExpertise() != null) {
-                member.getExpertise().clear();
+                if (member.getExpertise() == null) {
+                    member.setExpertise(new ArrayList<>());
+                } else {
+                    member.getExpertise().clear();
+                }
                 member.getExpertise().addAll(dto.getExpertise());
             }
             if (dto.getCareerHistory() != null) {
-                member.getCareerHistory().clear();
+                if (member.getCareerHistory() == null) {
+                    member.setCareerHistory(new ArrayList<>());
+                } else {
+                    member.getCareerHistory().clear();
+                }
                 member.getCareerHistory().addAll(dto.getCareerHistory());
             }
             if (dto.getEducation() != null) {
-                member.getEducation().clear();
+                if (member.getEducation() == null) {
+                    member.setEducation(new ArrayList<>());
+                } else {
+                    member.getEducation().clear();
+                }
                 member.getEducation().addAll(dto.getEducation());
             }
 
@@ -161,6 +177,12 @@ public class MemberService {
     @Transactional
     public Optional<MemberDto> updateMemberProfile(String username, MemberDto dto) {
         return memberRepository.findByUsername(username).map(member -> {
+            if (dto.getName() != null)
+                member.setName(dto.getName());
+            if (dto.getTitle() != null)
+                member.setTitle(dto.getTitle());
+            if (dto.getResearchArea() != null)
+                member.setResearchArea(dto.getResearchArea());
             if (dto.getEmail() != null)
                 member.setEmail(dto.getEmail());
             if (dto.getPhone() != null)
@@ -201,19 +223,35 @@ public class MemberService {
                 member.setIsContactPublic(dto.getIsContactPublic());
 
             if (dto.getSocialLinks() != null) {
-                member.getSocialLinks().clear();
+                if (member.getSocialLinks() == null) {
+                    member.setSocialLinks(new ArrayList<>());
+                } else {
+                    member.getSocialLinks().clear();
+                }
                 member.getSocialLinks().addAll(dto.getSocialLinks());
             }
             if (dto.getExpertise() != null) {
-                member.getExpertise().clear();
+                if (member.getExpertise() == null) {
+                    member.setExpertise(new ArrayList<>());
+                } else {
+                    member.getExpertise().clear();
+                }
                 member.getExpertise().addAll(dto.getExpertise());
             }
             if (dto.getCareerHistory() != null) {
-                member.getCareerHistory().clear();
+                if (member.getCareerHistory() == null) {
+                    member.setCareerHistory(new ArrayList<>());
+                } else {
+                    member.getCareerHistory().clear();
+                }
                 member.getCareerHistory().addAll(dto.getCareerHistory());
             }
             if (dto.getEducation() != null) {
-                member.getEducation().clear();
+                if (member.getEducation() == null) {
+                    member.setEducation(new ArrayList<>());
+                } else {
+                    member.getEducation().clear();
+                }
                 member.getEducation().addAll(dto.getEducation());
             }
 
