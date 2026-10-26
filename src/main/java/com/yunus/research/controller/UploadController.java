@@ -203,9 +203,8 @@ public class UploadController {
             String photoUrl = cloudinaryService.uploadMemberPhoto(file, username);
 
             // Update member's photoUrl in database
-            MemberDto updateDto = new MemberDto(
-                    null, null, null, null, null, null, null, null, null, null,
-                    photoUrl, null, null, null);
+            MemberDto updateDto = new MemberDto();
+            updateDto.setPhotoUrl(photoUrl);
 
             var updatedMember = memberService.updateMemberProfile(username, updateDto);
 
