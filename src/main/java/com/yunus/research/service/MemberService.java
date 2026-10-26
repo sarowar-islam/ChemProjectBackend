@@ -69,6 +69,8 @@ public class MemberService {
         member.setGoogleScholarLink(request.getGoogleScholarLink());
         member.setSocialLinks(request.getSocialLinks() != null ? request.getSocialLinks() : new ArrayList<>());
         member.setExpertise(request.getExpertise() != null ? request.getExpertise() : new ArrayList<>());
+        member.setCareerHistory(new ArrayList<>());
+        member.setEducation(new ArrayList<>());
 
         if (request.getJoinedDate() != null && !request.getJoinedDate().isEmpty()) {
             member.setJoinedDate(LocalDate.parse(request.getJoinedDate().substring(0, 10)));
@@ -106,14 +108,50 @@ public class MemberService {
                 member.setPhotoUrl(dto.getPhotoUrl());
             if (dto.getGoogleScholarLink() != null)
                 member.setGoogleScholarLink(dto.getGoogleScholarLink());
+            if (dto.getCurrentTitle() != null)
+                member.setCurrentTitle(dto.getCurrentTitle());
+            if (dto.getCurrentOrganization() != null)
+                member.setCurrentOrganization(dto.getCurrentOrganization());
+            if (dto.getCurrentDepartment() != null)
+                member.setCurrentDepartment(dto.getCurrentDepartment());
+            if (dto.getLocation() != null)
+                member.setLocation(dto.getLocation());
+            if (dto.getCurrentPositionStartDate() != null)
+                member.setCurrentPositionStartDate(dto.getCurrentPositionStartDate());
+            if (dto.getCurrentPositionDescription() != null)
+                member.setCurrentPositionDescription(dto.getCurrentPositionDescription());
+            if (dto.getFormerRole() != null)
+                member.setFormerRole(dto.getFormerRole());
+            if (dto.getLabAffiliation() != null)
+                member.setLabAffiliation(dto.getLabAffiliation());
+            if (dto.getLabContributions() != null)
+                member.setLabContributions(dto.getLabContributions());
+            if (dto.getOrcid() != null)
+                member.setOrcid(dto.getOrcid());
+            if (dto.getResearchGate() != null)
+                member.setResearchGate(dto.getResearchGate());
+            if (dto.getPersonalWebsite() != null)
+                member.setPersonalWebsite(dto.getPersonalWebsite());
+            if (dto.getIsEmailPublic() != null)
+                member.setIsEmailPublic(dto.getIsEmailPublic());
+            if (dto.getIsContactPublic() != null)
+                member.setIsContactPublic(dto.getIsContactPublic());
+
             if (dto.getSocialLinks() != null) {
                 member.getSocialLinks().clear();
                 member.getSocialLinks().addAll(dto.getSocialLinks());
             }
             if (dto.getExpertise() != null) {
-                // Clear and add new items to handle ElementCollection properly
                 member.getExpertise().clear();
                 member.getExpertise().addAll(dto.getExpertise());
+            }
+            if (dto.getCareerHistory() != null) {
+                member.getCareerHistory().clear();
+                member.getCareerHistory().addAll(dto.getCareerHistory());
+            }
+            if (dto.getEducation() != null) {
+                member.getEducation().clear();
+                member.getEducation().addAll(dto.getEducation());
             }
 
             return toDto(memberRepository.save(member));
@@ -133,14 +171,50 @@ public class MemberService {
                 member.setPhotoUrl(dto.getPhotoUrl());
             if (dto.getGoogleScholarLink() != null)
                 member.setGoogleScholarLink(dto.getGoogleScholarLink());
+            if (dto.getCurrentTitle() != null)
+                member.setCurrentTitle(dto.getCurrentTitle());
+            if (dto.getCurrentOrganization() != null)
+                member.setCurrentOrganization(dto.getCurrentOrganization());
+            if (dto.getCurrentDepartment() != null)
+                member.setCurrentDepartment(dto.getCurrentDepartment());
+            if (dto.getLocation() != null)
+                member.setLocation(dto.getLocation());
+            if (dto.getCurrentPositionStartDate() != null)
+                member.setCurrentPositionStartDate(dto.getCurrentPositionStartDate());
+            if (dto.getCurrentPositionDescription() != null)
+                member.setCurrentPositionDescription(dto.getCurrentPositionDescription());
+            if (dto.getFormerRole() != null)
+                member.setFormerRole(dto.getFormerRole());
+            if (dto.getLabAffiliation() != null)
+                member.setLabAffiliation(dto.getLabAffiliation());
+            if (dto.getLabContributions() != null)
+                member.setLabContributions(dto.getLabContributions());
+            if (dto.getOrcid() != null)
+                member.setOrcid(dto.getOrcid());
+            if (dto.getResearchGate() != null)
+                member.setResearchGate(dto.getResearchGate());
+            if (dto.getPersonalWebsite() != null)
+                member.setPersonalWebsite(dto.getPersonalWebsite());
+            if (dto.getIsEmailPublic() != null)
+                member.setIsEmailPublic(dto.getIsEmailPublic());
+            if (dto.getIsContactPublic() != null)
+                member.setIsContactPublic(dto.getIsContactPublic());
+
             if (dto.getSocialLinks() != null) {
                 member.getSocialLinks().clear();
                 member.getSocialLinks().addAll(dto.getSocialLinks());
             }
             if (dto.getExpertise() != null) {
-                // Clear and add new items to handle ElementCollection properly
                 member.getExpertise().clear();
                 member.getExpertise().addAll(dto.getExpertise());
+            }
+            if (dto.getCareerHistory() != null) {
+                member.getCareerHistory().clear();
+                member.getCareerHistory().addAll(dto.getCareerHistory());
+            }
+            if (dto.getEducation() != null) {
+                member.getEducation().clear();
+                member.getEducation().addAll(dto.getEducation());
             }
 
             return toDto(memberRepository.save(member));
@@ -150,24 +224,19 @@ public class MemberService {
     @Transactional
     public Optional<MemberDto> updateMemberSettings(String username, UpdateMemberSettingsRequest request) {
         return memberRepository.findByUsername(username).map(member -> {
-            // Update name if provided
             if (request.getName() != null && !request.getName().isEmpty()) {
                 member.setName(request.getName());
             }
 
-            // Update username if provided and different
             if (request.getUsername() != null && !request.getUsername().isEmpty()
                     && !request.getUsername().equals(username)) {
-                // Check if new username already exists
                 if (memberRepository.existsByUsername(request.getUsername())) {
                     throw new IllegalArgumentException("Username already taken");
                 }
                 member.setUsername(request.getUsername());
             }
 
-            // Update password if provided
             if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
-                // Verify current password
                 if (request.getCurrentPassword() == null || request.getCurrentPassword().isEmpty()) {
                     throw new IllegalArgumentException("Current password is required");
                 }
@@ -205,6 +274,22 @@ public class MemberService {
                 member.getGoogleScholarLink(),
                 member.getSocialLinks(),
                 member.getExpertise(),
-                member.getJoinedDate() != null ? member.getJoinedDate().toString() : null);
+                member.getJoinedDate() != null ? member.getJoinedDate().toString() : null,
+                member.getCurrentTitle(),
+                member.getCurrentOrganization(),
+                member.getCurrentDepartment(),
+                member.getLocation(),
+                member.getCurrentPositionStartDate(),
+                member.getCurrentPositionDescription(),
+                member.getFormerRole(),
+                member.getLabAffiliation(),
+                member.getLabContributions(),
+                member.getOrcid(),
+                member.getResearchGate(),
+                member.getPersonalWebsite(),
+                member.getIsEmailPublic(),
+                member.getIsContactPublic(),
+                member.getCareerHistory(),
+                member.getEducation());
     }
 }

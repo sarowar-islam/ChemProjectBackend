@@ -54,15 +54,64 @@ public class Member {
     @Column(name = "google_scholar_link")
     private String googleScholarLink;
 
+    // Alumni / Professional fields
+    @Column(name = "current_title")
+    private String currentTitle;
+
+    @Column(name = "current_organization")
+    private String currentOrganization;
+
+    @Column(name = "current_department")
+    private String currentDepartment;
+
+    private String location;
+
+    @Column(name = "current_position_start_date")
+    private String currentPositionStartDate;
+
+    @Column(name = "current_position_description", columnDefinition = "TEXT")
+    private String currentPositionDescription;
+
+    @Column(name = "former_role")
+    private String formerRole;
+
+    @Column(name = "lab_affiliation")
+    private String labAffiliation;
+
+    @Column(name = "lab_contributions", columnDefinition = "TEXT")
+    private String labContributions;
+
+    private String orcid;
+
+    @Column(name = "research_gate")
+    private String researchGate;
+
+    @Column(name = "personal_website")
+    private String personalWebsite;
+
+    @Column(name = "is_email_public")
+    private Boolean isEmailPublic = true;
+
+    @Column(name = "is_contact_public")
+    private Boolean isContactPublic = true;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "member_social_links", joinColumns = @JoinColumn(name = "member_id"))
     private List<SocialLink> socialLinks = new ArrayList<>();
 
-    // Store expertise as JSON array in PostgreSQL
+    // Store expertise as JSON/ElementCollection in PostgreSQL
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "member_expertise", joinColumns = @JoinColumn(name = "member_id"))
     @Column(name = "expertise")
     private List<String> expertise = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_career_history", joinColumns = @JoinColumn(name = "member_id"))
+    private List<CareerItem> careerHistory = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_education", joinColumns = @JoinColumn(name = "member_id"))
+    private List<EducationItem> education = new ArrayList<>();
 
     @Column(name = "joined_date")
     private LocalDate joinedDate;
