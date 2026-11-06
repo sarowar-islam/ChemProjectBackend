@@ -19,7 +19,7 @@ public class GmailEmailService {
 
     private final JavaMailSender mailSender;
 
-    @Value("${mail.sender.email:biochemical.research.lab@gmail.com}")
+    @Value("${mail.sender.email:mail@bcerlab.com}")
     private String senderEmail;
 
     @Value("${mail.sender.name:Biochemical and Environmental Research Lab}")
@@ -97,8 +97,11 @@ public class GmailEmailService {
                 + "<tr><td align=\"center\">"
                 + "<table role=\"presentation\" width=\"100%\" style=\"max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #dbe7f3;box-shadow:0 12px 30px rgba(15,23,42,0.08);\">"
                 + "<tr><td style=\"padding:28px 32px;background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#ffffff;\">"
-                + "<div style=\"font-size:14px;letter-spacing:1px;text-transform:uppercase;opacity:0.9;\">Biochemical and Environmental Research Lab</div>"
-                + "<div style=\"font-size:26px;font-weight:700;margin-top:10px;\">Password reset verification</div>"
+                + "<table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin-bottom:12px;\"><tr>"
+                + "<td style=\"vertical-align:middle;padding-right:12px;\"><img src=\"https://bcerlab.com/photos/Logo.png\" alt=\"BCER Lab Logo\" width=\"42\" height=\"42\" style=\"border-radius:8px;background:#ffffff;padding:4px;display:block;\" /></td>"
+                + "<td style=\"vertical-align:middle;\"><div style=\"font-size:14px;letter-spacing:1px;text-transform:uppercase;opacity:0.9;font-weight:600;\">Biochemical and Environmental Research Lab</div></td>"
+                + "</tr></table>"
+                + "<div style=\"font-size:26px;font-weight:700;margin-top:6px;\">Password reset verification</div>"
                 + "</td></tr>"
                 + "<tr><td style=\"padding:32px;\">"
                 + "<p style=\"margin:0 0 16px;font-size:16px;line-height:1.7;\">Hello " + escapeHtml(displayName)
@@ -138,8 +141,11 @@ public class GmailEmailService {
                 + "<tr><td align=\"center\">"
                 + "<table role=\"presentation\" width=\"100%\" style=\"max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #dbe7f3;box-shadow:0 12px 30px rgba(15,23,42,0.08);\">"
                 + "<tr><td style=\"padding:28px 32px;background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#ffffff;\">"
-                + "<div style=\"font-size:14px;letter-spacing:1px;text-transform:uppercase;opacity:0.9;\">Biochemical and Environmental Research Lab</div>"
-                + "<div style=\"font-size:26px;font-weight:700;margin-top:10px;\">Account assistance update</div>"
+                + "<table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin-bottom:12px;\"><tr>"
+                + "<td style=\"vertical-align:middle;padding-right:12px;\"><img src=\"https://bcerlab.com/photos/Logo.png\" alt=\"BCER Lab Logo\" width=\"42\" height=\"42\" style=\"border-radius:8px;background:#ffffff;padding:4px;display:block;\" /></td>"
+                + "<td style=\"vertical-align:middle;\"><div style=\"font-size:14px;letter-spacing:1px;text-transform:uppercase;opacity:0.9;font-weight:600;\">Biochemical and Environmental Research Lab</div></td>"
+                + "</tr></table>"
+                + "<div style=\"font-size:26px;font-weight:700;margin-top:6px;\">Account assistance update</div>"
                 + "</td></tr>"
                 + "<tr><td style=\"padding:32px;\">"
                 + "<p style=\"margin:0 0 16px;font-size:16px;line-height:1.7;\">Hello,</p>"
