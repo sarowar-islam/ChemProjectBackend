@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -235,12 +236,14 @@ public class InstrumentService {
 
         InstrumentBooking saved = bookingRepository.save(booking);
 
-        try {
-            Instrument instrument = instrumentRepository.findById(request.getInstrumentId()).orElse(null);
-            gmailEmailService.sendNewBookingNotification(saved, instrument, "sarowarislam1122@gmail.com");
-        } catch (Exception e) {
-            log.error("Failed to send new booking notification email", e);
-        }
+        CompletableFuture.runAsync(() -> {
+            try {
+                Instrument instrument = instrumentRepository.findById(request.getInstrumentId()).orElse(null);
+                gmailEmailService.sendNewBookingNotification(saved, instrument, "yunusahmed@cuet.ac.bd");
+            } catch (Exception e) {
+                log.error("Failed to send new booking notification email asynchronously", e);
+            }
+        });
 
         return toBookingDto(saved);
     }
