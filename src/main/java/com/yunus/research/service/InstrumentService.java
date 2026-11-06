@@ -4,6 +4,7 @@ import com.yunus.research.dto.*;
 import com.yunus.research.entity.*;
 import com.yunus.research.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class InstrumentService {
 
@@ -22,6 +24,7 @@ public class InstrumentService {
     private final InstrumentReviewRepository reviewRepository;
     private final InstrumentUnavailablePeriodRepository unavailablePeriodRepository;
     private final InstrumentCategoryRepository categoryRepository;
+    private final GmailEmailService gmailEmailService;
 
     // ==================== Instrument CRUD ====================
 
@@ -231,6 +234,14 @@ public class InstrumentService {
         booking.setStatus("pending");
 
         InstrumentBooking saved = bookingRepository.save(booking);
+
+        try {
+            Instrument instrument = instrumentRepository.findById(request.getInstrumentId()).orElse(null);
+            gmailEmailService.sendNewBookingNotification(saved, instrument, "sarowarislam1122@gmail.com");
+        } catch (Exception e) {
+            log.error("Failed to send new booking notification email", e);
+        }
+
         return toBookingDto(saved);
     }
 
