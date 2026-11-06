@@ -104,14 +104,19 @@ public class CloudinaryService {
     }
 
     /**
-     * Upload an instrument image to Cloudinary
+     * Upload an instrument document (SOP or Operating Procedure) to Cloudinary
      *
-     * @param file The image file
-     * @return The secure URL of the uploaded image
+     * @param file The document file
+     * @return The secure URL of the uploaded document
      */
-    public String uploadInstrumentImage(MultipartFile file) throws IOException {
-        String publicId = "instrument-" + UUID.randomUUID();
-        return uploadImage(file, "research-group/instruments", publicId);
+    public String uploadInstrumentDocument(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+        String publicId = "instrument-doc-" + UUID.randomUUID() + extension;
+        return uploadImage(file, "research-group/instruments/docs", publicId);
     }
 
     /**

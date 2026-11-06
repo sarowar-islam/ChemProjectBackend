@@ -20,6 +20,8 @@ public class InstrumentDto {
     private String category;
     private String status;
     private String imageUrl;
+    private String sopUrl;
+    private String operatingProcedureUrl;
     private String manufacturer;
     private String model;
     private String serialNumber;

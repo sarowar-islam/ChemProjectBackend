@@ -32,6 +32,10 @@ public class CreateInstrumentRequest {
     @NotBlank(message = "Image URL is required")
     private String imageUrl;
 
+    private String sopUrl;
+
+    private String operatingProcedureUrl;
+
     @NotBlank(message = "Manufacturer is required")
     private String manufacturer;
 

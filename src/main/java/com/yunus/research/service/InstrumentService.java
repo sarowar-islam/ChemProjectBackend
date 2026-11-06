@@ -64,6 +64,8 @@ public class InstrumentService {
         instrument.setCategory(request.getCategory());
         instrument.setStatus(request.getStatus());
         instrument.setImageUrl(request.getImageUrl());
+        instrument.setSopUrl(request.getSopUrl());
+        instrument.setOperatingProcedureUrl(request.getOperatingProcedureUrl());
         instrument.setManufacturer(request.getManufacturer());
         instrument.setModel(request.getModel());
         instrument.setSerialNumber(request.getSerialNumber());
@@ -110,6 +112,8 @@ public class InstrumentService {
         instrument.setCategory(request.getCategory());
         instrument.setStatus(request.getStatus());
         instrument.setImageUrl(request.getImageUrl());
+        instrument.setSopUrl(request.getSopUrl());
+        instrument.setOperatingProcedureUrl(request.getOperatingProcedureUrl());
         instrument.setManufacturer(request.getManufacturer());
         instrument.setModel(request.getModel());
         instrument.setSerialNumber(request.getSerialNumber());
@@ -428,6 +432,8 @@ public class InstrumentService {
         dto.setCategory(instrument.getCategory());
         dto.setStatus(instrument.getStatus());
         dto.setImageUrl(instrument.getImageUrl());
+        dto.setSopUrl(instrument.getSopUrl());
+        dto.setOperatingProcedureUrl(instrument.getOperatingProcedureUrl());
         dto.setManufacturer(instrument.getManufacturer());
         dto.setModel(instrument.getModel());
         dto.setSerialNumber(instrument.getSerialNumber());

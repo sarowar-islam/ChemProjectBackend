@@ -44,6 +44,10 @@ public class Instrument {
     @Column(nullable = false)
     private String imageUrl;
 
+    private String sopUrl;
+
+    private String operatingProcedureUrl;
+
     @Column(nullable = false)
     private String manufacturer;
 
