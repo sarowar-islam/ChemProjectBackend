@@ -162,6 +162,53 @@ public class UploadController {
     }
 
     /**
+     * Upload an instrument image to Cloudinary
+     *
+     * @param file The image file to upload
+     * @return The URL of the uploaded image
+     */
+    @PostMapping("/instrument-image")
+    public ResponseEntity<Map<String, Object>> uploadInstrumentImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "No file provided"));
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File must be an image"));
+        }
+
+        if (file.getSize() > 4 * 1024 * 1024) { // max 4MB
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File size must be less than 4MB"));
+        }
+
+        try {
+            log.info("Uploading instrument image: {}, size: {} bytes",
+                    file.getOriginalFilename(), file.getSize());
+
+            String imageUrl = cloudinaryService.uploadInstrumentImage(file);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "imageUrl", imageUrl,
+                    "data", Map.of("imageUrl", imageUrl),
+                    "message", "Instrument image uploaded successfully"));
+        } catch (Exception e) {
+            log.error("Failed to upload instrument image: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage(),
+                    "message", e.getMessage()));
+        }
+    }
+
+    /**
      * Upload a member's profile photo to Cloudinary
      *
      * @param file     The image file to upload
