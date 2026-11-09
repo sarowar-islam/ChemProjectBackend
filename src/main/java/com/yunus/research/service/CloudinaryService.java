@@ -93,6 +93,17 @@ public class CloudinaryService {
     }
 
     /**
+     * Upload an instrument image to Cloudinary
+     *
+     * @param file The image file
+     * @return The secure URL of the uploaded image
+     */
+    public String uploadInstrumentImage(MultipartFile file) throws IOException {
+        String publicId = "instrument-" + UUID.randomUUID();
+        return uploadImage(file, "research-group/instruments", publicId);
+    }
+
+    /**
      * Upload a notice file (image, PDF, document) to Cloudinary
      *
      * @param file The file
