@@ -98,6 +98,8 @@ public class MemberService {
                 member.setPhone(dto.getPhone());
             if (dto.getPosition() != null)
                 member.setPosition(dto.getPosition());
+            if (dto.getJoinedDate() != null)
+                member.setJoinedDate(parseJoinedDate(dto.getJoinedDate()));
             if (dto.getTitle() != null)
                 member.setTitle(dto.getTitle());
             if (dto.getResearchArea() != null)
@@ -183,6 +185,8 @@ public class MemberService {
                 member.setTitle(dto.getTitle());
             if (dto.getResearchArea() != null)
                 member.setResearchArea(dto.getResearchArea());
+            if (dto.getJoinedDate() != null)
+                member.setJoinedDate(parseJoinedDate(dto.getJoinedDate()));
             if (dto.getEmail() != null)
                 member.setEmail(dto.getEmail());
             if (dto.getPhone() != null)
@@ -294,6 +298,14 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+
+    private LocalDate parseJoinedDate(String joinedDate) {
+        if (joinedDate.isBlank()) {
+            return null;
+        }
+        String date = joinedDate.trim();
+        return LocalDate.parse(date.substring(0, Math.min(date.length(), 10)));
     }
 
     private MemberDto toDto(Member member) {
